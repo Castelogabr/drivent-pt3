@@ -6,7 +6,7 @@ import enrollmentRepository from '@/repositories/enrollment-repository';
 async function getAllHotels() {
   const hotels = await hotelsRepository.getAllHotels();
 
-  if (!hotels) throw notFoundError();
+  if (!hotels.length) throw notFoundError();
 
   return hotels;
 }
