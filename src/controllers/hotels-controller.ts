@@ -4,8 +4,10 @@ import { AuthenticatedRequest } from '@/middlewares';
 import hotelsService from '@/services/hotels-service';
 
 export async function getAllHotels(req: AuthenticatedRequest, res: Response) {
+  const { userId } = req;
+
   try {
-    const hotels = await hotelsService.getAllHotels();
+    const hotels = await hotelsService.getAllHotels(userId);
 
     return res.status(httpStatus.OK).send(hotels);
   } catch (error) {
