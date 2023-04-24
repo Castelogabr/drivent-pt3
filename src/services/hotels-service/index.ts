@@ -23,9 +23,22 @@ async function verifyTicketAndEnrollment(userId: number) {
     throw paymentError();
   }
 }
+
+async function getHotelsById(hotelId: number, userId: number) {
+  await verifyTicketAndEnrollment(userId);
+
+  const rooms = await hotelsRepository.findHotelById(hotelId);
+
+  if (!rooms) {
+    throw notFoundError();
+  }
+
+  return rooms;
+}
 const hotelsService = {
   getAllHotels,
   verifyTicketAndEnrollment,
+  getHotelsById,
 };
 
 export default hotelsService;
