@@ -7,8 +7,9 @@ export async function getAllHotels(req: AuthenticatedRequest, res: Response) {
   const { userId } = req;
 
   try {
-    const hotels = await hotelsService.getAllHotels(userId);
+    await hotelsService.verifyTicketAndEnrollment(userId);
 
+    const hotels = await hotelsService.getAllHotels();
     return res.status(httpStatus.OK).send(hotels);
   } catch (error) {
     if (error.name === 'PaymentError') {

@@ -4,9 +4,6 @@ import ticketsRepository from '@/repositories/tickets-repository';
 import enrollmentRepository from '@/repositories/enrollment-repository';
 
 async function getAllHotels(userId: number) {
-  await verifyTicket(userId);
-  await verifyEnrollment(userId);
-
   const hotels = await hotelsRepository.getAllHotels();
 
   if (!hotels) throw notFoundError();
@@ -14,8 +11,11 @@ async function getAllHotels(userId: number) {
   return hotels;
 }
 
-async function verifyTicket(userId: number) {
-  const ticket = await ticketsRepository.findTicketByEnrollmentId(userId);
+async function verifyTicketAndEnrollment(userId: number) {
+  const enrollment = await enrollmentRepository.findWithAddressByUserId(userId);
+  if (!enrollment) throw notFoundError();
+
+  const ticket = await ticketsRepository.findTicketByEnrollmentId(enrollment.id);
 
   if (!ticket) throw notFoundError();
 
@@ -23,16 +23,9 @@ async function verifyTicket(userId: number) {
     throw paymentError();
   }
 }
-
-async function verifyEnrollment(userId: number) {
-  const enrollment = await enrollmentRepository.findWithAddressByUserId(userId);
-
-  if (!enrollment) throw notFoundError();
-}
 const hotelsService = {
   getAllHotels,
-  verifyTicket,
-  verifyEnrollment,
+  verifyTicketAndEnrollment,
 };
 
 export default hotelsService;
